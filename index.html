@@ -13,17 +13,68 @@
       padding: 0;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
         sans-serif;
-      background: #f5f5f7;
-      color: #111827;
+      background: radial-gradient(circle at top, #fce7f3 0, #eff6ff 40%, #f9fafb 100%);
+      color: #0f172a;
     }
+
+    /* Top header bar */
+    .topbar {
+      background: linear-gradient(90deg, #ec4899, #6366f1);
+      color: #f9fafb;
+      padding: 0.7rem 1.3rem;
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.25);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+    .topbar-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      min-width: 0;
+    }
+    .logo-dot {
+      width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 30%, #f9a8d4, #1d4ed8);
+      box-shadow: 0 0 0 3px rgba(248, 250, 252, 0.25);
+    }
+    .topbar-title {
+      font-weight: 600;
+      font-size: 0.98rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .topbar-author {
+      font-size: 0.82rem;
+      opacity: 0.95;
+      white-space: nowrap;
+    }
+    .topbar-author::before {
+      content: "Author: ";
+      opacity: 0.8;
+      font-weight: 500;
+    }
+
     .app {
       max-width: 960px;
       margin: 0 auto;
-      padding: 1.5rem;
+      padding: 1.5rem 1.25rem 2.5rem;
     }
     h1 {
-      font-size: 1.6rem;
-      margin-bottom: 0.75rem;
+      font-size: 1.55rem;
+      margin-bottom: 0.35rem;
+      color: #0f172a;
     }
     h2 {
       font-size: 1.1rem;
@@ -31,12 +82,32 @@
       margin-bottom: 0.5rem;
     }
     .card {
-      background: #ffffff;
-      border-radius: 0.75rem;
+      background: rgba(255, 255, 255, 0.96);
+      border-radius: 0.9rem;
       padding: 1rem 1.25rem;
-      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.04);
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.06);
       margin-top: 0.75rem;
+      border: 1px solid rgba(219, 234, 254, 0.9);
+      position: relative;
+      overflow: hidden;
     }
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(
+        130deg,
+        rgba(236, 72, 153, 0.08),
+        transparent 35%,
+        rgba(59, 130, 246, 0.08)
+      );
+      mix-blend-mode: screen;
+    }
+    .card > * {
+      position: relative;
+    }
+
     .form-grid {
       display: grid;
       grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
@@ -46,7 +117,15 @@
       .form-grid {
         grid-template-columns: minmax(0, 1fr);
       }
+      .topbar-inner {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .topbar-author {
+        align-self: flex-start;
+      }
     }
+
     .field {
       margin-bottom: 0.9rem;
     }
@@ -66,57 +145,77 @@
     input[type="text"] {
       width: 100%;
       padding: 0.45rem 0.55rem;
-      border-radius: 0.5rem;
+      border-radius: 0.6rem;
       border: 1px solid #d1d5db;
       font-size: 0.9rem;
       outline: none;
       background: #f9fafb;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease,
+        background 0.15s ease, transform 0.05s ease;
     }
     select:focus,
     input:focus {
-      border-color: #4f46e5;
-      box-shadow: 0 0 0 1px rgba(79, 70, 229, 0.2);
+      border-color: #ec4899;
+      box-shadow: 0 0 0 1px rgba(236, 72, 153, 0.3);
       background: #ffffff;
+      transform: translateY(-0.5px);
     }
+
     button {
       font-size: 0.9rem;
       border-radius: 999px;
       border: none;
-      padding: 0.55rem 1.1rem;
+      padding: 0.55rem 1.2rem;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 0.3rem;
+      gap: 0.35rem;
+      transition: transform 0.08s ease, box-shadow 0.08s ease, opacity 0.1s;
+      white-space: nowrap;
     }
     .btn-primary {
-      background: #4f46e5;
-      color: white;
+      background: linear-gradient(135deg, #ec4899, #6366f1);
+      color: #f9fafb;
+      box-shadow: 0 10px 25px rgba(79, 70, 229, 0.45);
+      font-weight: 600;
+    }
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 32px rgba(79, 70, 229, 0.55);
     }
     .btn-secondary {
-      background: #e5e7eb;
-      color: #111827;
+      background: rgba(239, 246, 255, 0.95);
+      color: #1f2937;
       font-weight: 500;
+      border: 1px solid rgba(191, 219, 254, 0.9);
+    }
+    .btn-secondary:hover {
+      transform: translateY(-0.5px);
+      box-shadow: 0 6px 16px rgba(148, 163, 184, 0.35);
     }
     .btn-primary:disabled {
-      opacity: 0.5;
+      opacity: 0.55;
       cursor: default;
+      box-shadow: none;
+      transform: none;
     }
+
     .prefix-grid {
       display: flex;
       flex-wrap: wrap;
       gap: 0.4rem;
       max-height: 150px;
       overflow-y: auto;
-      padding: 0.3rem 0;
-      border-radius: 0.5rem;
+      padding: 0.35rem 0.4rem;
+      border-radius: 0.7rem;
       border: 1px solid #e5e7eb;
-      background: #f9fafb;
+      background: linear-gradient(135deg, #fdf2f8, #eff6ff);
     }
     .prefix-pill {
-      background: white;
+      background: #ffffff;
       border-radius: 999px;
-      padding: 0.1rem 0.5rem;
-      border: 1px solid #e5e7eb;
+      padding: 0.1rem 0.55rem;
+      border: 1px solid rgba(209, 213, 219, 0.9);
       font-size: 0.78rem;
       display: inline-flex;
       align-items: center;
@@ -126,6 +225,7 @@
     .prefix-pill input {
       margin: 0;
     }
+
     .status {
       font-size: 0.8rem;
       margin-top: 0.4rem;
@@ -137,26 +237,41 @@
     .status.ok {
       color: #059669;
     }
+
     #previewBox {
-      background: #0b1120;
+      background: #020617;
       color: #e5e7eb;
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
         "Liberation Mono", "Courier New", monospace;
       font-size: 0.8rem;
       padding: 0.75rem;
-      border-radius: 0.5rem;
+      border-radius: 0.6rem;
       max-height: 260px;
       overflow-y: auto;
       white-space: pre-wrap;
+      border: 1px solid rgba(30, 64, 175, 0.7);
+      box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.9);
     }
   </style>
 </head>
 <body>
+  <!-- Gradient header with author -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="topbar-left">
+        <span class="logo-dot"></span>
+        <span class="topbar-title">US Bulk Phone Number Generator</span>
+      </div>
+      <div class="topbar-author">Made by Blessed FC</div>
+    </div>
+  </header>
+
   <div class="app">
-    <h1>US Bulk Phone Number Generator</h1>
+    <h1>Generator Panel</h1>
     <p class="hint">
-      Generate realistic US-style phone numbers with random first/last names and
-      export them as CSV.
+      Generate realistic US-style phone numbers like
+      <strong>+1 (806) 204-2735</strong> with random first/last names and
+      export everything as a CSV file.
     </p>
 
     <div class="form-grid">
@@ -166,7 +281,6 @@
           <label for="areaCodeSelect">Area code (NPA)</label>
           <select id="areaCodeSelect">
             <option value="">Select a common area code…</option>
-            <!-- A few examples; you can extend this list -->
             <option value="806">806 (TX)</option>
             <option value="205">205 (AL)</option>
             <option value="212">212 (NY)</option>
@@ -230,7 +344,7 @@
         <h2>Preview (first 50 rows)</h2>
         <p class="hint">
           This is just a preview. All generated entries (up to 15,000) are saved
-          in the CSV.
+          in the CSV file.
         </p>
         <pre id="previewBox"></pre>
       </div>
@@ -240,69 +354,17 @@
   <script>
     // ---------- Name pools ----------
     const FIRST_NAMES = [
-      "James",
-      "Mary",
-      "John",
-      "Patricia",
-      "Robert",
-      "Jennifer",
-      "Michael",
-      "Linda",
-      "William",
-      "Elizabeth",
-      "David",
-      "Barbara",
-      "Richard",
-      "Susan",
-      "Joseph",
-      "Jessica",
-      "Thomas",
-      "Sarah",
-      "Charles",
-      "Karen",
-      "Christopher",
-      "Nancy",
-      "Daniel",
-      "Lisa",
-      "Matthew",
-      "Betty",
-      "Anthony",
-      "Sandra",
-      "Mark",
-      "Ashley"
+      "James","Mary","John","Patricia","Robert","Jennifer","Michael","Linda",
+      "William","Elizabeth","David","Barbara","Richard","Susan","Joseph","Jessica",
+      "Thomas","Sarah","Charles","Karen","Christopher","Nancy","Daniel","Lisa",
+      "Matthew","Betty","Anthony","Sandra","Mark","Ashley"
     ];
 
     const LAST_NAMES = [
-      "Smith",
-      "Johnson",
-      "Williams",
-      "Brown",
-      "Jones",
-      "Garcia",
-      "Miller",
-      "Davis",
-      "Rodriguez",
-      "Martinez",
-      "Hernandez",
-      "Lopez",
-      "Gonzalez",
-      "Wilson",
-      "Anderson",
-      "Thomas",
-      "Taylor",
-      "Moore",
-      "Jackson",
-      "Martin",
-      "Lee",
-      "Perez",
-      "Thompson",
-      "White",
-      "Harris",
-      "Sanchez",
-      "Clark",
-      "Ramirez",
-      "Lewis",
-      "Robinson"
+      "Smith","Johnson","Williams","Brown","Jones","Garcia","Miller","Davis",
+      "Rodriguez","Martinez","Hernandez","Lopez","Gonzalez","Wilson","Anderson",
+      "Thomas","Taylor","Moore","Jackson","Martin","Lee","Perez","Thompson",
+      "White","Harris","Sanchez","Clark","Ramirez","Lewis","Robinson"
     ];
 
     function randomItem(arr) {
@@ -310,14 +372,10 @@
     }
 
     function generateRandomName() {
-      return {
-        first: randomItem(FIRST_NAMES),
-        last: randomItem(LAST_NAMES)
-      };
+      return { first: randomItem(FIRST_NAMES), last: randomItem(LAST_NAMES) };
     }
 
     // ---------- Prefix generation (NXX) ----------
-    // Generate a single valid-style NANP prefix: 2–9XX, not N11, not 555.
     function generateSinglePrefix() {
       while (true) {
         const d1 = Math.floor(Math.random() * 8) + 2; // 2–9
@@ -325,11 +383,8 @@
         const d3 = Math.floor(Math.random() * 10);
         const prefix = `${d1}${d2}${d3}`;
 
-        // Exclude N11 (211, 311, 411, …, 911)
-        if (d2 === 1 && d3 === 1) continue;
-
-        // Exclude 555 blocks (often reserved/test)
-        if (prefix === "555") continue;
+        if (d2 === 1 && d3 === 1) continue; // N11
+        if (prefix === "555") continue;     // 555
 
         return prefix;
       }
@@ -346,7 +401,7 @@
     function renderPrefixes() {
       const container = document.getElementById("prefixContainer");
       container.innerHTML = "";
-      const prefixes = generateValidPrefixes(24); // 24 options is enough visually
+      const prefixes = generateValidPrefixes(24);
 
       prefixes.forEach((p) => {
         const label = document.createElement("label");
@@ -376,19 +431,13 @@
       return list;
     }
 
-    // ---------- Line-number (last 4 digits) generation ----------
-    // Filter out ugly / obviously fake patterns
+    // ---------- Line-number (last 4 digits) ----------
     function isBadLineNumber(str) {
-      // All same digit: 0000, 1111, ..., 9999
-      if (/^([0-9])\1{3}$/.test(str)) return true;
-
-      const seqAsc = ["0123", "1234", "2345", "3456", "4567", "5678", "6789"];
-      const seqDesc = ["9876", "8765", "7654", "6543", "5432", "4321", "3210"];
+      if (/^([0-9])\1{3}$/.test(str)) return true; // 0000,1111,...
+      const seqAsc = ["0123","1234","2345","3456","4567","5678","6789"];
+      const seqDesc = ["9876","8765","7654","6543","5432","4321","3210"];
       if (seqAsc.includes(str) || seqDesc.includes(str)) return true;
-
-      // 0001, 0002, etc — looks too test-y
-      if (/^000[0-9]$/.test(str)) return true;
-
+      if (/^000[0-9]$/.test(str)) return true; // 0001,0002,...
       return false;
     }
 
@@ -431,11 +480,9 @@
       const select = document.getElementById("areaCodeSelect");
       const customInput = document.getElementById("customAreaCode");
       let value = select.value;
-
       if (!value || value === "custom") {
         value = (customInput.value || "").trim();
       }
-
       return value;
     }
 
@@ -459,15 +506,8 @@
 
       const qtyInput = document.getElementById("quantityInput");
       const quantity = parseInt(qtyInput.value, 10);
-      if (
-        Number.isNaN(quantity) ||
-        quantity < 50 ||
-        quantity > 15000
-      ) {
-        setStatus(
-          "Quantity must be a number between 50 and 15,000.",
-          true
-        );
+      if (Number.isNaN(quantity) || quantity < 50 || quantity > 15000) {
+        setStatus("Quantity must be a number between 50 and 15,000.", true);
         return;
       }
 
@@ -486,9 +526,11 @@
           ? prefixes[Math.floor(Math.random() * prefixes.length)]
           : generateSinglePrefix();
         const line = generateValidLineNumber();
-        const phone = `${areaCode}-${prefix}-${line}`;
-        const { first, last } = generateRandomName();
 
+        // Final format: +1 (NPA) NXX-XXXX
+        const phone = `+1 (${areaCode}) ${prefix}-${line}`;
+
+        const { first, last } = generateRandomName();
         rows.push([phone, first, last]);
 
         if (i < 50) {
@@ -525,7 +567,6 @@
       document
         .getElementById("areaCodeSelect")
         .addEventListener("change", () => {
-          // When they change area code, just refresh the prefix pool
           renderPrefixes();
         });
       document
