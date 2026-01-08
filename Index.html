@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>US Bulk Phone Number Generator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+      background: #f5f5f7;
+      color: #111827;
+    }
+    .app {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 1.5rem;
+    }
+    h1 {
+      font-size: 1.6rem;
+      margin-bottom: 0.75rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      margin-top: 2rem;
+      margin-bottom: 0.5rem;
+    }
+    .card {
+      background: #ffffff;
+      border-radius: 0.75rem;
+      padding: 1rem 1.25rem;
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.04);
+      margin-top: 0.75rem;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+      gap: 1.5rem;
+    }
+    @media (max-width: 768px) {
+      .form-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+    .field {
+      margin-bottom: 0.9rem;
+    }
+    label {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+    .hint {
+      font-size: 0.78rem;
+      color: #6b7280;
+      margin: 0.15rem 0 0.4rem 0;
+    }
+    select,
+    input[type="number"],
+    input[type="text"] {
+      width: 100%;
+      padding: 0.45rem 0.55rem;
+      border-radius: 0.5rem;
+      border: 1px solid #d1d5db;
+      font-size: 0.9rem;
+      outline: none;
+      background: #f9fafb;
+    }
+    select:focus,
+    input:focus {
+      border-color: #4f46e5;
+      box-shadow: 0 0 0 1px rgba(79, 70, 229, 0.2);
+      background: #ffffff;
+    }
+    button {
+      font-size: 0.9rem;
+      border-radius: 999px;
+      border: none;
+      padding: 0.55rem 1.1rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    .btn-primary {
+      background: #4f46e5;
+      color: white;
+    }
+    .btn-secondary {
+      background: #e5e7eb;
+      color: #111827;
+      font-weight: 500;
+    }
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+    .prefix-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      max-height: 150px;
+      overflow-y: auto;
+      padding: 0.3rem 0;
+      border-radius: 0.5rem;
+      border: 1px solid #e5e7eb;
+      background: #f9fafb;
+    }
+    .prefix-pill {
+      background: white;
+      border-radius: 999px;
+      padding: 0.1rem 0.5rem;
+      border: 1px solid #e5e7eb;
+      font-size: 0.78rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      white-space: nowrap;
+    }
+    .prefix-pill input {
+      margin: 0;
+    }
+    .status {
+      font-size: 0.8rem;
+      margin-top: 0.4rem;
+      min-height: 1em;
+    }
+    .status.error {
+      color: #b91c1c;
+    }
+    .status.ok {
+      color: #059669;
+    }
+    #previewBox {
+      background: #0b1120;
+      color: #e5e7eb;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+        "Liberation Mono", "Courier New", monospace;
+      font-size: 0.8rem;
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+      max-height: 260px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <h1>US Bulk Phone Number Generator</h1>
+    <p class="hint">
+      Generate realistic US-style phone numbers with random first/last names and
+      export them as CSV.
+    </p>
+
+    <div class="form-grid">
+      <!-- LEFT: controls -->
+      <div class="card">
+        <div class="field">
+          <label for="areaCodeSelect">Area code (NPA)</label>
+          <select id="areaCodeSelect">
+            <option value="">Select a common area code…</option>
+            <!-- A few examples; you can extend this list -->
+            <option value="806">806 (TX)</option>
+            <option value="205">205 (AL)</option>
+            <option value="212">212 (NY)</option>
+            <option value="305">305 (FL)</option>
+            <option value="404">404 (GA)</option>
+            <option value="702">702 (NV)</option>
+            <option value="312">312 (IL)</option>
+            <option value="602">602 (AZ)</option>
+            <option value="503">503 (OR)</option>
+            <option value="custom">Custom (type it below)</option>
+          </select>
+          <p class="hint">
+            Pick from the list or choose "Custom" and type any valid US area
+            code.
+          </p>
+          <input
+            id="customAreaCode"
+            type="text"
+            maxlength="3"
+            placeholder="Or type 3-digit area code (e.g. 806)"
+          />
+        </div>
+
+        <div class="field">
+          <label for="quantityInput">How many numbers?</label>
+          <input
+            id="quantityInput"
+            type="number"
+            min="50"
+            max="15000"
+            step="50"
+            value="500"
+          />
+          <p class="hint">Minimum 50, maximum 15,000 per batch.</p>
+        </div>
+
+        <div class="field">
+          <label>Prefixes (NXX) for this area code</label>
+          <p class="hint">
+            We auto-generate valid-style prefixes for the NANP format
+            (2–9XX; no N11, no 555). Uncheck any you don’t want to use.
+          </p>
+          <div id="prefixContainer" class="prefix-grid"></div>
+          <div style="margin-top: 0.5rem">
+            <button type="button" id="refreshPrefixesBtn" class="btn-secondary">
+              Refresh prefix options
+            </button>
+          </div>
+        </div>
+
+        <div class="field" style="margin-top: 1rem">
+          <button id="generateBtn" class="btn-primary">
+            Generate &amp; Download CSV
+          </button>
+          <p id="status" class="status"></p>
+        </div>
+      </div>
+
+      <!-- RIGHT: preview -->
+      <div class="card">
+        <h2>Preview (first 50 rows)</h2>
+        <p class="hint">
+          This is just a preview. All generated entries (up to 15,000) are saved
+          in the CSV.
+        </p>
+        <pre id="previewBox"></pre>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ---------- Name pools ----------
+    const FIRST_NAMES = [
+      "James",
+      "Mary",
+      "John",
+      "Patricia",
+      "Robert",
+      "Jennifer",
+      "Michael",
+      "Linda",
+      "William",
+      "Elizabeth",
+      "David",
+      "Barbara",
+      "Richard",
+      "Susan",
+      "Joseph",
+      "Jessica",
+      "Thomas",
+      "Sarah",
+      "Charles",
+      "Karen",
+      "Christopher",
+      "Nancy",
+      "Daniel",
+      "Lisa",
+      "Matthew",
+      "Betty",
+      "Anthony",
+      "Sandra",
+      "Mark",
+      "Ashley"
+    ];
+
+    const LAST_NAMES = [
+      "Smith",
+      "Johnson",
+      "Williams",
+      "Brown",
+      "Jones",
+      "Garcia",
+      "Miller",
+      "Davis",
+      "Rodriguez",
+      "Martinez",
+      "Hernandez",
+      "Lopez",
+      "Gonzalez",
+      "Wilson",
+      "Anderson",
+      "Thomas",
+      "Taylor",
+      "Moore",
+      "Jackson",
+      "Martin",
+      "Lee",
+      "Perez",
+      "Thompson",
+      "White",
+      "Harris",
+      "Sanchez",
+      "Clark",
+      "Ramirez",
+      "Lewis",
+      "Robinson"
+    ];
+
+    function randomItem(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function generateRandomName() {
+      return {
+        first: randomItem(FIRST_NAMES),
+        last: randomItem(LAST_NAMES)
+      };
+    }
+
+    // ---------- Prefix generation (NXX) ----------
+    // Generate a single valid-style NANP prefix: 2–9XX, not N11, not 555.
+    function generateSinglePrefix() {
+      while (true) {
+        const d1 = Math.floor(Math.random() * 8) + 2; // 2–9
+        const d2 = Math.floor(Math.random() * 10);
+        const d3 = Math.floor(Math.random() * 10);
+        const prefix = `${d1}${d2}${d3}`;
+
+        // Exclude N11 (211, 311, 411, …, 911)
+        if (d2 === 1 && d3 === 1) continue;
+
+        // Exclude 555 blocks (often reserved/test)
+        if (prefix === "555") continue;
+
+        return prefix;
+      }
+    }
+
+    function generateValidPrefixes(count) {
+      const set = new Set();
+      while (set.size < count) {
+        set.add(generateSinglePrefix());
+      }
+      return Array.from(set).sort();
+    }
+
+    function renderPrefixes() {
+      const container = document.getElementById("prefixContainer");
+      container.innerHTML = "";
+      const prefixes = generateValidPrefixes(24); // 24 options is enough visually
+
+      prefixes.forEach((p) => {
+        const label = document.createElement("label");
+        label.className = "prefix-pill";
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.checked = true;
+        checkbox.value = p;
+
+        const span = document.createElement("span");
+        span.textContent = p;
+
+        label.appendChild(checkbox);
+        label.appendChild(span);
+        container.appendChild(label);
+      });
+    }
+
+    function collectSelectedPrefixes() {
+      const container = document.getElementById("prefixContainer");
+      const boxes = container.querySelectorAll('input[type="checkbox"]');
+      const list = [];
+      boxes.forEach((box) => {
+        if (box.checked) list.push(box.value);
+      });
+      return list;
+    }
+
+    // ---------- Line-number (last 4 digits) generation ----------
+    // Filter out ugly / obviously fake patterns
+    function isBadLineNumber(str) {
+      // All same digit: 0000, 1111, ..., 9999
+      if (/^([0-9])\1{3}$/.test(str)) return true;
+
+      const seqAsc = ["0123", "1234", "2345", "3456", "4567", "5678", "6789"];
+      const seqDesc = ["9876", "8765", "7654", "6543", "5432", "4321", "3210"];
+      if (seqAsc.includes(str) || seqDesc.includes(str)) return true;
+
+      // 0001, 0002, etc — looks too test-y
+      if (/^000[0-9]$/.test(str)) return true;
+
+      return false;
+    }
+
+    function generateValidLineNumber() {
+      while (true) {
+        const n = Math.floor(Math.random() * 10000);
+        const s = n.toString().padStart(4, "0");
+        if (!isBadLineNumber(s)) return s;
+      }
+    }
+
+    // ---------- CSV helpers ----------
+    function escapeCsvCell(cell) {
+      if (cell == null) return "";
+      const s = String(cell);
+      if (/[",\r\n]/.test(s)) {
+        return '"' + s.replace(/"/g, '""') + '"';
+      }
+      return s;
+    }
+
+    function downloadCsv(rows, filename) {
+      const lines = rows.map((row) => row.map(escapeCsvCell).join(","));
+      const csvContent = lines.join("\r\n");
+      const blob = new Blob([csvContent], {
+        type: "text/csv;charset=utf-8;"
+      });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", filename);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
+
+    // ---------- Form logic ----------
+    function getSelectedAreaCode() {
+      const select = document.getElementById("areaCodeSelect");
+      const customInput = document.getElementById("customAreaCode");
+      let value = select.value;
+
+      if (!value || value === "custom") {
+        value = (customInput.value || "").trim();
+      }
+
+      return value;
+    }
+
+    function setStatus(msg, isError = false) {
+      const statusEl = document.getElementById("status");
+      statusEl.textContent = msg;
+      statusEl.classList.remove("error", "ok");
+      if (msg) {
+        statusEl.classList.add(isError ? "error" : "ok");
+      }
+    }
+
+    function handleGenerate() {
+      setStatus("");
+
+      const areaCode = getSelectedAreaCode();
+      if (!/^\d{3}$/.test(areaCode)) {
+        setStatus("Please provide a 3-digit US area code (e.g. 806).", true);
+        return;
+      }
+
+      const qtyInput = document.getElementById("quantityInput");
+      const quantity = parseInt(qtyInput.value, 10);
+      if (
+        Number.isNaN(quantity) ||
+        quantity < 50 ||
+        quantity > 15000
+      ) {
+        setStatus(
+          "Quantity must be a number between 50 and 15,000.",
+          true
+        );
+        return;
+      }
+
+      const generateBtn = document.getElementById("generateBtn");
+      generateBtn.disabled = true;
+      generateBtn.textContent = "Generating…";
+
+      const prefixes = collectSelectedPrefixes();
+      const usePrefixes = prefixes.length > 0;
+
+      const rows = [["PhoneNumber", "FirstName", "LastName"]];
+      const previewLines = [];
+
+      for (let i = 0; i < quantity; i++) {
+        const prefix = usePrefixes
+          ? prefixes[Math.floor(Math.random() * prefixes.length)]
+          : generateSinglePrefix();
+        const line = generateValidLineNumber();
+        const phone = `${areaCode}-${prefix}-${line}`;
+        const { first, last } = generateRandomName();
+
+        rows.push([phone, first, last]);
+
+        if (i < 50) {
+          previewLines.push(`${phone}  |  ${first} ${last}`);
+        }
+      }
+
+      const previewBox = document.getElementById("previewBox");
+      previewBox.textContent =
+        previewLines.length > 0 ? previewLines.join("\n") : "(No preview)";
+
+      const ts = new Date()
+        .toISOString()
+        .replace(/[-:T]/g, "")
+        .slice(0, 12);
+      const filename = `phone_numbers_${areaCode}_${ts}.csv`;
+
+      downloadCsv(rows, filename);
+
+      setStatus(
+        `Done. Generated ${quantity.toLocaleString()} numbers for area code ${areaCode} and downloaded CSV.`,
+        false
+      );
+      generateBtn.disabled = false;
+      generateBtn.textContent = "Generate & Download CSV";
+    }
+
+    // ---------- Init ----------
+    document.addEventListener("DOMContentLoaded", () => {
+      renderPrefixes();
+      document
+        .getElementById("refreshPrefixesBtn")
+        .addEventListener("click", renderPrefixes);
+      document
+        .getElementById("areaCodeSelect")
+        .addEventListener("change", () => {
+          // When they change area code, just refresh the prefix pool
+          renderPrefixes();
+        });
+      document
+        .getElementById("generateBtn")
+        .addEventListener("click", handleGenerate);
+    });
+  </script>
+</body>
+</html>
