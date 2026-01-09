@@ -301,8 +301,7 @@
             <option value="custom">Custom (type it below)</option>
           </select>
           <p class="hint">
-            Pick from the list or choose "Custom" and type any valid US area
-            code.
+            Pick from the list or choose "Custom" and type any valid US area code.
           </p>
           <input
             id="customAreaCode"
@@ -328,8 +327,8 @@
         <div class="field">
           <label>Prefixes (NXX) for this area code</label>
           <p class="hint">
-            We auto-generate valid-style prefixes for the NANP format
-            (2–9XX; no N11, no 555). Uncheck any you don’t want to use.
+            We auto-generate valid-style prefixes for the NANP format (2–9XX; no N11, no 555).
+            Uncheck any you don’t want to use. Or set a single custom prefix below.
           </p>
           <div id="prefixContainer" class="prefix-grid"></div>
           <div style="margin-top: 0.5rem">
@@ -337,6 +336,20 @@
               Refresh prefix options
             </button>
           </div>
+        </div>
+
+        <div class="field">
+          <label for="customPrefix">Custom single prefix (optional)</label>
+          <input
+            id="customPrefix"
+            type="text"
+            maxlength="3"
+            placeholder="e.g. 204"
+          />
+          <p class="hint">
+            If set, every number will use this exact prefix (must be 3 digits like 204;
+            first digit 2–9, not N11, not 555).
+          </p>
         </div>
 
         <div class="field" style="margin-top: 1rem">
@@ -383,17 +396,23 @@
       return { first: randomItem(FIRST_NAMES), last: randomItem(LAST_NAMES) };
     }
 
-    // ---------- Prefix generation (NXX) ----------
+    // ---------- Prefix validation & generation ----------
+    function isValidPrefix(prefix) {
+      if (!/^\d{3}$/.test(prefix)) return false;
+      const [d1, d2, d3] = prefix.split("").map(Number);
+      if (d1 < 2) return false;              // first digit must be 2–9
+      if (d2 === 1 && d3 === 1) return false; // N11 reserved
+      if (prefix === "555") return false;    // avoid 555 test blocks
+      return true;
+    }
+
     function generateSinglePrefix() {
       while (true) {
         const d1 = Math.floor(Math.random() * 8) + 2; // 2–9
         const d2 = Math.floor(Math.random() * 10);
         const d3 = Math.floor(Math.random() * 10);
         const prefix = `${d1}${d2}${d3}`;
-
-        if (d2 === 1 && d3 === 1) continue; // N11
-        if (prefix === "555") continue;     // 555
-
+        if (!isValidPrefix(prefix)) continue;
         return prefix;
       }
     }
@@ -519,6 +538,23 @@
         return;
       }
 
+      const customPrefixInput = document.getElementById("customPrefix");
+      const customPrefixRaw = (customPrefixInput.value || "").trim();
+      let useCustomPrefix = false;
+      let customPrefix = null;
+
+      if (customPrefixRaw !== "") {
+        if (!isValidPrefix(customPrefixRaw)) {
+          setStatus(
+            "Custom prefix must be a valid NXX (3 digits, first 2–9, not N11, not 555).",
+            true
+          );
+          return;
+        }
+        useCustomPrefix = true;
+        customPrefix = customPrefixRaw;
+      }
+
       const generateBtn = document.getElementById("generateBtn");
       generateBtn.disabled = true;
       generateBtn.textContent = "Generating…";
@@ -530,9 +566,11 @@
       const previewLines = [];
 
       for (let i = 0; i < quantity; i++) {
-        const prefix = usePrefixes
-          ? prefixes[Math.floor(Math.random() * prefixes.length)]
-          : generateSinglePrefix();
+        const prefix = useCustomPrefix
+          ? customPrefix
+          : usePrefixes
+            ? prefixes[Math.floor(Math.random() * prefixes.length)]
+            : generateSinglePrefix();
         const line = generateValidLineNumber();
 
         // Final format: +1 (NPA) NXX-XXXX
@@ -575,8 +613,8 @@
       document
         .getElementById("areaCodeSelect")
         .addEventListener("change", () => {
-          renderPrefixes();
-        });
+        renderPrefixes();
+      });
       document
         .getElementById("generateBtn")
         .addEventListener("click", handleGenerate);
